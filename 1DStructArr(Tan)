@@ -1,0 +1,136 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int studentId;
+    string fname, lname, course;
+    float gpa;
+};
+
+Student students[1000];
+int counter = 0;
+
+bool isDuplicate(int studentId) {
+    for (int i = 0; i < counter; i++) {
+        if (students[i].studentId == studentId) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void addStudent() {
+    int studentId;
+    cout << "Enter Student ID: ";
+    cin >> studentId;
+
+    while (isDuplicate(studentId)) {
+        cout << "Student ID already exists! Enter a new Student ID: ";
+        cin >> studentId;
+    }
+
+    students[counter].studentId = studentId;
+    cout << "Enter First Name: "; cin >> students[counter].fname;
+    cout << "Enter Last Name: "; cin >> students[counter].lname;
+    cout << "Enter Course: "; cin >> students[counter].course;
+    cout << "Enter GPA: "; cin >> students[counter].gpa;
+
+    counter++;
+    cout << "Student added successfully!\n";
+}
+
+void editStudent() {
+    if (counter == 0) {
+        cout << "No records available.\n";
+        return;
+    }
+
+    int studentId;
+    cout << "Enter Student ID to edit: ";
+    cin >> studentId;
+
+    for (int i = 0; i < counter; i++) {
+        if (students[i].studentId == studentId) {
+            cout << "Enter New First Name: "; cin >> students[i].fname;
+            cout << "Enter New Last Name: "; cin >> students[i].lname;
+            cout << "Enter New Course: "; cin >> students[i].course;
+            cout << "Enter New GPA: "; cin >> students[i].gpa;
+            cout << "Student data updated successfully!\n";
+            return;
+        }
+    }
+    cout << "Student ID not found.\n";
+}
+
+void deleteStudent() {
+    if (counter == 0) {
+        cout << "No records available.\n";
+        return;
+    }
+
+    int studentId;
+    cout << "Enter Student ID to delete: ";
+    cin >> studentId;
+
+    for (int i = 0; i < counter; i++) {
+        if (students[i].studentId == studentId) {
+            for (int j = i; j < counter - 1; j++) {
+                students[j] = students[j + 1];
+            }
+            counter--;
+            cout << "Student deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "Student ID not found.\n";
+}
+
+void displayStudents() {
+    if (counter == 0) {
+        cout << "No records available.\n";
+        return;
+    }
+
+    int choice;
+    cout << "View Options:\n1. Sort by Last Name\n2. Sort by GPA\nEnter option: ";
+    cin >> choice;
+
+    for (int i = 0; i < counter - 1; i++) {
+        for (int j = i + 1; j < counter; j++) {
+            bool swapCondition = (choice == 1) ? (students[i].lname > students[j].lname) 
+                                               : (students[i].gpa > students[j].gpa);
+            if (swapCondition) {
+                swap(students[i], students[j]);
+            }
+        }
+    }
+
+    cout << "\nID\tFirst Name\tLast Name\tCourse\tGPA\n";
+    for (int i = 0; i < counter; i++) {
+        cout << students[i].studentId << "\t"
+             << students[i].fname << "\t\t"
+             << students[i].lname << "\t\t"
+             << students[i].course << "\t"
+             << students[i].gpa << "\n";
+    }
+}
+
+int main() {
+    int choice;
+    while (true) {
+        cout << "\nStudent Management System\n";
+        cout << "1. Add Student\n2. Edit Student\n3. Delete Student\n4. View Students\n5. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addStudent(); break;
+            case 2: editStudent(); break;
+            case 3: deleteStudent(); break;
+            case 4: displayStudents(); break;
+            case 5: cout << "Exiting...\n"; return 0;
+            default: cout << "Invalid choice. Try again.\n";
+        }
+    }
+}
